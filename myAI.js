@@ -1,84 +1,62 @@
 
-const io = require('socket.io-client');
-var socket = io('https://namabilly-gomoku.herokuapp.com');
-//var socket = io('http://localhost:3000');
+const gomoku = require('gomoku');
 
-var SIZE = {x: 15, y: 15};
-var g;
-var gid = -1;
+var g = gomoku.game;
+var socket = gomoku.socket;
 var name = 'myAI';
-var side = 0;
 
-socket.on('connect', () => {
-	console.log(socket.connected);
-	socket.emit('signUp', {name: name});
-});
+// join game
+g.joinGame(name);
 
-socket.on('disconnect', () => {
-	console.log('disconnected.');
-});
+// g.matrix represents the current board with 15*15 2d array
+// g.side gives your color
+// -1 represents black while 1 stands for white; 0 is empty
+// g.put puts a piece
 
-socket.on('signUpResponse', (data) => {
-	if (data.success){
-		console.log('Successfully signed up.');
-		socket.emit('joinGame', {
-			name: name
-		});
-	}
-	else {
-		console.log(data.msg);
-	}
-});
-
-socket.on('joinGameResponse', (data) => {
-	if (data.success){
-		gid = data.id;
-		console.log('Joined game 10' + gid + '.');
-		g = new Game(SIZE);
-	}
-	else {
-		console.log(data.msg);
-	}
-});
-
-socket.on('updateBoard', (data) => {
-	console.log('received.');
-	g.load(data.pieces);
-	console.log(g.matrix);
-	if (!data.lock) {
-		socket.emit('put', {
-			id: gid,
-			position: {
-				x: Math.floor(Math.random()*15),
-				y: Math.floor(Math.random()*15)
-			},
-			name: name
-		});
-	}
-});
-
-class Game {
-	constructor(size){
-		this.size = size;
-		this.matrix = [];
-		this.init();
-	}
-	init(){
-		for (let x=0;x<this.size.x;x++) {
-			this.matrix[x] = [];
-			for (let y=0;y<this.size.y;y++) {
-				this.matrix[x][y] = 0;
+// your code here
+function main(){
+	setTimeout(function(){
+		if (g.turn%2*2-1===g.side) {
+			if (g.turn === 0) {
+				g.put({
+					x: 7,
+					y: 7
+				});
+			}
+			if (g.turn === 1) {
+				for (let x=0;x<15;x++) {
+					for (let y=0;y<15;y++) {
+						if (g.matrix[x][y]!==g.side) {
+							var d = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]][Math.floor(Math.random()*8)];
+							if (g.matrix[x+d[0]]&&g.matrix[x+d[0]][y+d[0]]===0) {
+								g.put({
+									x: x+d[0],
+									y: y+d[1]
+								});
+								break;
+							}
+						}
+					}
+				}
+			}
+			for (let x=0;x<15;x++) {
+				for (let y=0;y<15;y++) {
+					if (g.matrix[x][y]===g.side) {
+						var d = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]][Math.floor(Math.random()*8)];
+						if (g.matrix[x+d[0]]&&g.matrix[x+d[0]][y+d[0]]===0)
+							g.put({
+								x: x+d[0],
+								y: y+d[1]
+							});
+					}
+				}
 			}
 		}
-	}
-	load(matrix){
-		this.init();
-		for (let i in matrix) {
-			var piece = matrix[i];
-			this.matrix[piece.position.x][piece.position.y] = piece.turn%2*2-1;
-		}
-	}
+		main();
+	}, 1);
+	
 }
 
+main();
 
 
