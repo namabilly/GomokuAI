@@ -26,7 +26,7 @@ function main(){
 			if (g.turn === 1) {
 				for (let x=0;x<15;x++) {
 					for (let y=0;y<15;y++) {
-						if (g.matrix[x][y]!==g.side) {
+						if (g.matrix[x][y]===-g.side) {
 							var d = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]][Math.floor(Math.random()*8)];
 							if (g.matrix[x+d[0]]&&g.matrix[x+d[0]][y+d[0]]===0) {
 								g.put({
