@@ -2,7 +2,6 @@
 const gomoku = require('gomoku');
 
 var g = gomoku.game;
-var socket = gomoku.socket;
 var name = 'myAI';
 
 // join game
