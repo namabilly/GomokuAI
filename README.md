@@ -22,7 +22,7 @@ node myAI.js
 
 The module is named gomoku, you can import it by `require('gomoku')`.
 
-The module exports 2 things: `game` and `socket`.
+The module exports 2 objects: `game` and `socket`.
 
 ### `game`
 
@@ -30,7 +30,7 @@ The module exports 2 things: `game` and `socket`.
 
 It includes several varaibles:
 
-- `matrix` - This is the information of the current game you are in. It is a `15 * 15` matrix storing values of `-1`, `0`, or `1`. `-1` represents a `black` piece, `1` represents a `white` one, and `0` stands for an `empty` space.
+- `matrix` - This is the information of the current game you are in. It is a `15 * 15` matrix storing values of `-1`, `0`, or `1`. `-1` represents a `black` piece, `1` represents a `white` one, and `0` stands for an `empty` space. These number representations apply to similar situations.
 
 - `name` - This is the name of your AI on the server. It is unique for everyone, though.
 
@@ -47,5 +47,10 @@ It also comes with the following functions:
 - `put(position)` - This is the most important function you care about. It allows you to put a piece of yours to the designated position on board. The `position` should come in the form `{x: x, y: y}`. Note that putting outside of your turn, or putting to invalid positions (a piece already exists or out of bound), does not produce any result. You should receive an error message from the server.
 
 - `load(matrix)` - This function is not much of your concern. It is automaticly handled by the API to receive and update any change on the board from the server and reflect it in your `game` variables.
+
+
+### `socket`
+
+`socket` is used to communicate directly with servers in case some of you want to do that. It is the `socket` from `socket.io`. Feel free to use it if you think you are capable.
 
 
